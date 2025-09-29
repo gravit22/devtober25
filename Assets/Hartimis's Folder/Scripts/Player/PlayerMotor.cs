@@ -8,21 +8,49 @@ public class PlayerMotor : MonoBehaviour
     private CharacterController controller;
     private Vector3 playerVelocity;
     private bool isGrounded;
-    public float speed = 5f;
-    public float gravity = 9.8f;
-    public float jumpHight = 3f;
+    private bool lerpCrouch = false;
+    private bool crouching = false;
+    private bool sprinting = false;
+    private float speed; // floating verable for setting the speed of the player.
+
+    // Fields to be modify in the Inspecter
+    [SerializeField] private float baseSpeed = 5f;
+    [SerializeField] private float gravity = 9.8f;
+    [SerializeField] private float jumpHight = 3f;
+    [SerializeField] private float sprintSpeed = 8f;
+    [SerializeField] private float crouchTimer = 0f;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
         // Sets the controller componet.
         controller = GetComponent<CharacterController>();
+        // sets the player speed to baseSpeed.
+        speed = baseSpeed;
     }
 
     // Update is called once per frame
     void Update()
     {
+        // Checks to see if the object is touching Ground.
         isGrounded = controller.isGrounded;
+        // If the controler is crouching.
+        if (lerpCrouch)
+        {
+            crouchTimer += Time.deltaTime;
+            float p = crouchTimer / 1;
+            p *= p;
+            if (crouching)
+                controller.height = Mathf.Lerp(controller.height, 1, p);
+            else
+                controller.height = Mathf.Lerp(controller.height, 2, p);
+
+            if (p > 1)
+            {
+                lerpCrouch = false;
+                crouchTimer = 0f;
+            }
+        }
     }
 
     public void ProcessMove(Vector2 input)
@@ -37,7 +65,7 @@ public class PlayerMotor : MonoBehaviour
         controller.Move(transform.TransformDirection(moveDirection) * speed * Time.deltaTime);
         // Adds Gravity to the charter.
         playerVelocity.y -= gravity * Time.deltaTime;
-        // Checks to see if the player is tuching "Ground" or not.
+        // Checks to see if the player is tuching "Ground" or not if so sets the downword force to 2. Preventing overflow.
         if (isGrounded && playerVelocity.y < 0)
         {
             playerVelocity.y = -2;
@@ -53,6 +81,22 @@ public class PlayerMotor : MonoBehaviour
         {
             playerVelocity.y = Mathf.Sqrt(jumpHight * -3f * -(gravity));
         }
+    }
+    public void Crouch()
+    {
+        //Toggles the value of crouching to true.
+        crouching = !crouching;
+        crouchTimer = 0; // Not sure what this is for it was in the totural.
+        lerpCrouch = true;
+    }
+
+    public void Sprint()
+    {
+        sprinting = !sprinting;
+        if (sprinting)
+            speed = sprintSpeed;
+        else
+            speed = baseSpeed;
     }
 
 }
