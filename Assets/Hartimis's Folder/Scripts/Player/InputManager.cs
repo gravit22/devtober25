@@ -5,7 +5,7 @@ public class InputManager : MonoBehaviour
 {
 
     private PlayerInput playerInput;
-    private PlayerInput.OnFootActions onFoot;
+    public PlayerInput.OnFootActions onFoot;
 
     private PlayerMotor motor;
     private PlayerLook look;
@@ -26,6 +26,7 @@ public class InputManager : MonoBehaviour
     {
         //Tells the PlayerMotor to move using the Values from the movment action.
         motor.ProcessMove(onFoot.Movement.ReadValue<Vector2>());
+
     }
 
     private void LateUpdate()
