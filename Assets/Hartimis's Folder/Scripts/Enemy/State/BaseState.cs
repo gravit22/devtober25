@@ -1,5 +1,8 @@
-//public abstract class BaseState;
-//{
-//
-//    public
-//}
+public abstract class BaseState
+{
+    public Enemy enemy;
+    public StateMachine stateMachine;
+    public abstract void Enter();
+    public abstract void Preformed();
+    public abstract void Exit();
+}
