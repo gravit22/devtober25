@@ -50,7 +50,6 @@ public class PlayerHealth : MonoBehaviour
     {
         
         healthText.text = "Health "+ health;
-        Debug.Log(health);
         float fillF = frountHealthBar.fillAmount;
         float fillB = backHealthBar.fillAmount;
         float hFraction = health / maxHealth;
